@@ -3,7 +3,7 @@
 namespace Drupal\hook_manager\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\hook_manager\Plugin\HookManager;
+use Drupal\hook_manager\Service\HookManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

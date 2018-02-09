@@ -2,6 +2,8 @@
 
 namespace Drupal\hook_manager\Plugin\HookInfo;
 
+use Drupal\hook_manager\Plugin\HookInfoBase;
+
 /**
  * Hook info example 2.
  *

@@ -21,9 +21,8 @@ class HookManager extends HookPluginManagerBase {
   public function __construct(\Traversable $namespaces,
     CacheBackendInterface $cache_backend) {
     parent::__construct('Plugin/HookInfo', $namespaces,
-      'Drupal\hook_manager\Plugin\HookInfo\HookInfoInterface',
+      'Drupal\hook_manager\Plugin\HookInfoInterface',
         'Drupal\hook_manager\Annotation\HookInfo');
-    //$this->alterInfo('hook_manager_plugin_info');
     $this->setCacheBackend($cache_backend, 'hook_manager_plugins');
   }
 

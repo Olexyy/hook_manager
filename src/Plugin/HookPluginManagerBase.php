@@ -257,41 +257,8 @@ class HookPluginManagerBase extends PluginManagerBase implements PluginManagerIn
       $this->processDefinition($definition, $plugin_id);
     }
     // Do not alter definitions.
-    // If this plugin was provided by a module that does not exist, remove the
-    // plugin definition.
-    foreach ($definitions as $plugin_id => $plugin_definition) {
-      $provider = $this->extractProviderFromDefinition($plugin_definition);
-      // Do not check provider existence.
-      if ($provider && !in_array($provider, ['core', 'component'])) {
-        unset($definitions[$plugin_id]);
-      }
-    }
+    // Do not check provider existence.
     return $definitions;
-  }
-
-  /**
-   * Extracts the provider from a plugin definition.
-   *
-   * @param mixed $plugin_definition
-   *   The plugin definition. Usually either an array or an instance of
-   *   \Drupal\Component\Plugin\Definition\PluginDefinitionInterface
-   *
-   * @return string|null
-   *   The provider string, if it exists. NULL otherwise.
-   */
-  protected function extractProviderFromDefinition($plugin_definition) {
-    if ($plugin_definition instanceof PluginDefinitionInterface) {
-      return $plugin_definition->getProvider();
-    }
-
-    // Attempt to convert the plugin definition to an array.
-    if (is_object($plugin_definition)) {
-      $plugin_definition = (array) $plugin_definition;
-    }
-
-    if (isset($plugin_definition['provider'])) {
-      return $plugin_definition['provider'];
-    }
   }
 
   /**
