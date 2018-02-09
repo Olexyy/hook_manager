@@ -1,0 +1,7 @@
+name: Hook manager
+type: module
+description: 'Hook manager, allows hooks definitions as plugins.'
+package: custom
+core: 8.x
+
+dependencies: { }

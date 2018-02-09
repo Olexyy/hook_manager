@@ -1,0 +1,8 @@
+importer.import:
+  path: '/hooks'
+  defaults:
+    source: ''
+    _title: 'Hooks'
+    _controller: '\Drupal\hook_manager\Controller\HookController::show'
+  requirements:
+    _permission: 'access content'

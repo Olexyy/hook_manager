@@ -1,0 +1,4 @@
+services:
+  hook_manager:
+    class: Drupal\hook_manager\Plugin\HookManager
+    parent: default_plugin_manager
