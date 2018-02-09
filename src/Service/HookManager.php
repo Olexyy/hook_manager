@@ -40,10 +40,13 @@ class HookManager extends HookPluginManagerBase {
    *   Results of invocation.
    */
   public function invoke($id, $name, array $args = []) {
-    $hookName = $this->getHookCanonicalName($name);
-    if ($definition = $this->definitionImplements($id, $hookName)) {
-      return $this->invokeDefinition($hookName, $definition, $args);
+
+    if ($hookName = $this->getHookCanonicalName($name)) {
+      if ($definition = $this->definitionImplements($id, $hookName)) {
+        return $this->invokeDefinition($hookName, $definition, $args);
+      }
     }
+
     return NULL;
   }
 
@@ -59,17 +62,20 @@ class HookManager extends HookPluginManagerBase {
    *   Results of invocation.
    */
   public function invokeAll($name, array $args = []) {
-    $hookName = $this->getHookCanonicalName($name);
+
     $return = [];
-    foreach ($this->definitionsImplement($hookName) as $definition) {
-      $result = $this->invokeDefinition($hookName, $definition, $args);
-      if (isset($result) && is_array($result)) {
-        $return = NestedArray::mergeDeep($return, $result);
-      }
-      elseif (isset($result)) {
-        $return[] = $result;
+    if ($hookName = $this->getHookCanonicalName($name)) {
+      foreach ($this->definitionsImplement($hookName) as $definition) {
+        $result = $this->invokeDefinition($hookName, $definition, $args);
+        if (isset($result) && is_array($result)) {
+          $return = NestedArray::mergeDeep($return, $result);
+        }
+        elseif (isset($result)) {
+          $return[] = $result;
+        }
       }
     }
+
     return $return;
   }
 
@@ -77,17 +83,20 @@ class HookManager extends HookPluginManagerBase {
    * Invokes alter hook.
    */
   public function alter($type, &$data, &$context1 = NULL, &$context2 = NULL) {
+
     if (is_string($type)) {
       $type = [$type];
     }
     if (is_array($type)) {
       foreach ($type as $name) {
-        $hookName = $this->getHookAlterCanonicalName($name);
-        foreach ($this->definitionsImplement($hookName) as $definition) {
-          $this->invokeDefinitionAlter($hookName, $definition, $data, $context1, $context2);
+        if ($hookName = $this->getHookAlterCanonicalName($name)) {
+          foreach ($this->definitionsImplement($hookName) as $definition) {
+            $this->invokeDefinitionAlter($hookName, $definition, $data, $context1, $context2);
+          }
         }
       }
     }
+
   }
 
   /**
@@ -104,11 +113,13 @@ class HookManager extends HookPluginManagerBase {
    *   Definition if any.
    */
   private function definitionImplements($id, $hookName) {
+
     if ($definition = $this->getDefinition($id)) {
       if (array_key_exists($hookName, $definition['hooks'])) {
         return $definition;
       }
     }
+
     return NULL;
   }
 
@@ -124,6 +135,7 @@ class HookManager extends HookPluginManagerBase {
    *   Of plugin definitions.
    */
   private function definitionsImplement($hookName) {
+
     static $definitions = [];
     if (!$definitions) {
       $definitions = $this->getDefinitions();
@@ -131,11 +143,14 @@ class HookManager extends HookPluginManagerBase {
     $implementations = [];
     foreach ($definitions as $definition) {
       if (array_key_exists($hookName, $definition['hooks'])) {
-        $implementations[] = $definition;
-        $definition['priority'] = $this->normalizePriority($definition['hooks'][$hookName]);
+        $implementations[] = [
+          'id' => $definition['id'],
+          'priority' => $this->normalizePriority($definition['hooks'][$hookName]),
+        ];
       }
     }
     $this->sort($implementations);
+
     return $implementations;
   }
 
@@ -153,17 +168,19 @@ class HookManager extends HookPluginManagerBase {
    *   Invocation result.
    */
   private function invokeDefinition($hookName, array $definition, array $args) {
+
     try {
       $hookImplementation = $this->createInstance($definition['id']);
       $method = $this->toCamelCase($hookName);
       if (method_exists($hookImplementation, $method)) {
-        return call_user_func_array($hookImplementation->$method, $args);
+        return call_user_func_array([$hookImplementation, $method], $args);
       }
       return NULL;
     }
     catch (\Exception $exception) {
       return NULL;
     }
+
   }
 
   /**
@@ -181,15 +198,16 @@ class HookManager extends HookPluginManagerBase {
    *   Alterable context.
    */
   private function invokeDefinitionAlter($hookName, array $definition, &$data, &$context1, &$context2) {
+
     try {
       $hookImplementation = $this->createInstance($definition['id']);
       $method = $this->toCamelCase($hookName);
       if (method_exists($hookImplementation, $method)) {
-        $hookImplementation->$method($data, $context1, $context2);
+        $hookImplementation->{$method}($data, $context1, $context2);
       }
     }
-    catch (\Exception $exception) {
-    }
+    catch (\Exception $exception) { }
+
   }
 
   /**
@@ -219,12 +237,14 @@ class HookManager extends HookPluginManagerBase {
    *   Expected 'hookName'.
    */
   private function toCamelCase($hookName) {
+
     $parts = explode('_', $hookName);
     array_walk($parts, function (&$part, $key) {
       if ($key) {
-        ucfirst($part);
+        $part = ucfirst($part);
       }
     });
+
     return implode('', $parts);
   }
 
@@ -238,7 +258,12 @@ class HookManager extends HookPluginManagerBase {
    *   Canonical hook name.
    */
   private function getHookCanonicalName($name) {
-    return 'hook_' . $name;
+
+    if($name) {
+      return 'hook_' . $name;
+    }
+
+    return '';
   }
 
   /**
@@ -251,7 +276,12 @@ class HookManager extends HookPluginManagerBase {
    *   Canonical alter hook name.
    */
   private function getHookAlterCanonicalName($name) {
-    return 'hook_' . $name . '_alter';
+
+    if($name) {
+      return 'hook_' . $name . '_alter';
+    }
+
+    return '';
   }
 
   /**
@@ -264,9 +294,11 @@ class HookManager extends HookPluginManagerBase {
    *   Integer value.
    */
   private function normalizePriority($value) {
+
     if (is_numeric($value)) {
       return (int) $value;
     }
+
     return 0;
   }
 

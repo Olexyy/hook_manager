@@ -8,26 +8,34 @@ use Drupal\hook_manager\Plugin\HookInfoBase;
 /**
  * Example hook info.
  *
- * Be careful: 'id' should be unique in project scope.
- * In 'hooks' array we define 'canonical' hook name, that begin with 'hook_'.
- * Conventional for methods that implement hooks is that they should be
+ * Be careful: 'id' should be unique in project scope, else plugins override.
+ * In 'hooks' array we define 'canonical' hook name, that begins with 'hook_'.
+ * Conventional for methods, that implement hooks, is that they should be
  * camel case analogs of 'canonical' hook name.
- * Value in this array is priority among other plugins for this hook.
+ * Value in 'hooks' array is priority compare to other plugins for this hook.
  *
  * @HookInfo(
  *  id = "example_hooks1",
  *  hooks = {
  *    "hook_theme" = 0,
  *    "hook_form_alter" = 0,
+ *    "hook_token_info" = 0,
  *  },
  * )
  */
 class Example1HookInfo extends HookInfoBase {
 
   /**
+   * Implements hook_token_info().
+   */
+  public function hookTokenInfo() {
+    $a = 1;
+  }
+
+  /**
    * Implements hook_theme().
    */
-  public function hookMenu() {
+  public function hookTheme() {
     $theme = [
       'theme2' => [],
     ];
