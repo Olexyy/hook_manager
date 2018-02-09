@@ -3,6 +3,11 @@
   "description": "Hook manager implementation.",
   "type": "drupal-module",
   "license": "GPL-2.0+",
-  "minimum-stability": "dev",
-  "require": { }
+  "require": { },
+  "authors": [
+    {
+      "name": "Olexyy Osadchyy",
+      "mail": "olexyy.mails@gmail.com"
+    }
+  ]
 }
