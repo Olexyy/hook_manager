@@ -7,7 +7,7 @@ use Drupal\Component\Annotation\Plugin;
 /**
  * Defines a HookInfo item annotation object.
  *
- * @see \Drupal\hook_manager\Service\HookManager
+ * @see \Drupal\hook_manager\Service\HookManagerBase
  *
  * @Annotation
  */
