@@ -1,6 +1,6 @@
 {
-  "name": "drupal/hooks_manager",
-  "description": "Hook manager implementation.",
+  "name": "drupal/hook_manager",
+  "description": "Hook manager (plugins) implementation.",
   "type": "drupal-module",
   "license": "GPL-2.0+",
   "require": { },
