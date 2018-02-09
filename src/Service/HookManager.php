@@ -3,16 +3,16 @@
 namespace Drupal\hook_manager\Service;
 
 use Drupal\Component\Utility\NestedArray;
-use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Plugin\HooklessPluginManager;
 
 /**
  * Class HookManager.
  *
  * @package Drupal\hook_manager\Plugin
  */
-class HookManager extends DefaultPluginManager {
+class HookManager extends HooklessPluginManager {
 
   /**
    * HookManager constructor.
@@ -25,7 +25,7 @@ class HookManager extends DefaultPluginManager {
     parent::__construct('Plugin/HookInfo', $namespaces, $module_handler,
       'Drupal\hook_manager\Plugin\HookInfo\HookInfoInterface',
         'Drupal\hook_manager\Annotation\HookInfo');
-    $this->alterInfo('hook_manager_plugin_info');
+    //$this->alterInfo('hook_manager_plugin_info');
     $this->setCacheBackend($cache_backend, 'hook_manager_plugins');
   }
 
