@@ -14,6 +14,20 @@ use Drupal\hook_manager\Plugin\HookPluginManagerBase;
 class HookManager extends HookPluginManagerBase {
 
   /**
+   * Static hook definitions list.
+   *
+   * @var array
+   */
+  protected $hookDefinitions = [];
+
+  /**
+   * Static alter hook definitions map.
+   *
+   * @var array
+   */
+  protected $hooksDefinitionsAlter = [];
+
+  /**
    * HookManager constructor.
    *
    * {@inheritdoc}
@@ -81,6 +95,15 @@ class HookManager extends HookPluginManagerBase {
 
   /**
    * Invokes alter hook.
+   *
+   * @param string|array $type
+   *   Expected non canonical name or list.
+   * @param mixed $data
+   *   Data passed by reference.
+   * @param mixed|null $context1
+   *   Context1 passed by reference.
+   * @param mixed|null $context2
+   *   Context2 passed by reference.
    */
   public function alter($type, &$data, &$context1 = NULL, &$context2 = NULL) {
 
@@ -90,7 +113,10 @@ class HookManager extends HookPluginManagerBase {
     if (is_array($type)) {
       foreach ($type as $name) {
         if ($hookName = $this->getHookAlterCanonicalName($name)) {
-          foreach ($this->definitionsImplement($hookName) as $definition) {
+          if (!isset($this->hooksDefinitionsAlter[$hookName])) {
+            $this->hooksDefinitionsAlter[$hookName] = $this->definitionsImplement($hookName);
+          }
+          foreach ($this->hooksDefinitionsAlter[$hookName] as $definition) {
             $this->invokeDefinitionAlter($hookName, $definition, $data, $context1, $context2);
           }
         }
@@ -136,12 +162,11 @@ class HookManager extends HookPluginManagerBase {
    */
   private function definitionsImplement($hookName) {
 
-    static $definitions = [];
-    if (!$definitions) {
-      $definitions = $this->getDefinitions();
+    if (!$this->hookDefinitions) {
+      $this->hookDefinitions = $this->getDefinitions();
     }
     $implementations = [];
-    foreach ($definitions as $definition) {
+    foreach ($this->hookDefinitions as $definition) {
       if (array_key_exists($hookName, $definition['hooks'])) {
         $implementations[] = [
           'id' => $definition['id'],
@@ -217,14 +242,19 @@ class HookManager extends HookPluginManagerBase {
    *   Hook info definitions.
    */
   private function sort(array &$definitions) {
-    uasort($definitions, [$this, 'comparator']);
+    usort($definitions, [$this, 'comparator']);
   }
 
   /**
    * Sorting comparator.
    */
   private function comparator(array $a, array $b) {
-    return $a['priority'] - $b['priority'];
+
+    if ($a['priority'] == $b['priority']) {
+      return 0;
+    }
+
+    return $a['priority'] < $b['priority']? 1 : -1;
   }
 
   /**

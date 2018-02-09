@@ -15,7 +15,7 @@ use Drupal\hook_manager\Plugin\HookInfoBase;
  * Value in 'hooks' array is priority compare to other plugins for this hook.
  *
  * @HookInfo(
- *  id = "example_hooks1",
+ *  id = "example_hooks_1",
  *  hooks = {
  *    "hook_theme" = 0,
  *    "hook_form_alter" = 0,

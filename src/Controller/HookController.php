@@ -35,7 +35,6 @@ class HookController extends ControllerBase {
    */
   public function show() {
     $hooks = $this->hookManager->getDefinitions();
-    $koks = $this->hookManager->createInstance('example_hooks1');
     $token = \Drupal::moduleHandler()->invokeAll('token_info');
 
     return [
