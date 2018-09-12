@@ -23,8 +23,9 @@ class HookManagerModuleHandler extends ModuleHandler {
    *
    * {@inheritdoc}
    */
-  public function __construct(string $root, array $module_list,
+  public function __construct($root, array $module_list,
     CacheBackendInterface $cache_backend, HookManager $hookManager) {
+
     parent::__construct($root, $module_list, $cache_backend);
     $this->hookManager = $hookManager;
   }

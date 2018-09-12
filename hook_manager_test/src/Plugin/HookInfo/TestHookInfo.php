@@ -28,21 +28,10 @@ class TestHookInfo extends HookInfoBase {
   /**
    * Result function.
    *
-   * @return string
-   *   Result.
-   */
-  public static function hookResultInvoke() {
-
-    return 'ok';
-  }
-
-  /**
-   * Result function.
-   *
    * @return array
    *   Result.
    */
-  public static function hookResultInvokeAll() {
+  public static function hookResult() {
 
     return  [
       'ok' => 'ok',
@@ -54,7 +43,7 @@ class TestHookInfo extends HookInfoBase {
    */
   public function hookHookManagerTestInvoke() {
 
-    return static::hookResultInvoke();
+    return static::hookResult();
   }
 
   /**
@@ -62,11 +51,11 @@ class TestHookInfo extends HookInfoBase {
    */
   public function hookHookManagerTestInvokeAll() {
 
-    return static::hookResultInvokeAll();
+    return static::hookResult();
   }
 
   /**
-   * Implements hook_form_alter().
+   * Implements hook_hook_manager_test_alter().
    */
   public function hookHookManagerTestAlter(array &$data) {
 

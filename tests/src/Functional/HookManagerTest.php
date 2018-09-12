@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\admin_toolbar\Functional;
+namespace Drupal\Tests\hook_manager\Functional;
 
 use Drupal\hook_manager\Service\HookManagerModuleHandler;
 use Drupal\hook_manager_test\Plugin\HookInfo\TestHookInfo;
@@ -45,13 +45,13 @@ class HookManagerTest extends BrowserTestBase {
    */
   public function testHooksInvocation() {
 
-    $result = $this->moduleHandler->invoke('hook_manager_test', 'hook_manager_test_invoke');
-    $this->assertEquals(TestHookInfo::hookResultInvoke(), $result, 'Hook info triggered');
+    $result = $this->moduleHandler->invokePlugin('hook_manager_test', 'hook_manager_test_invoke');
+    $this->assertEquals(TestHookInfo::hookResult(), $result, 'Hook invoke triggered');
     $result = $this->moduleHandler->invokeAll('hook_manager_test_invoke_all');
-    $this->assertEquals(TestHookInfo::hookResultInvokeAll(), $result, 'Hook info triggered');
+    $this->assertEquals(TestHookInfo::hookResult(), $result, 'Hook invoke all triggered');
     $data = [];
-    $this->moduleHandler->alter('hook_manager_test_alter', $data);
-    $this->assertNotEmpty($data['ok'], 'Hook alter triggered');
+    $this->moduleHandler->alter('hook_manager_test', $data);
+    $this->assertEquals(TestHookInfo::hookResult(), $data, 'Hook alter triggered');
   }
 
 }
