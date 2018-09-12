@@ -1,0 +1,7 @@
+name: Hook manager test
+type: module
+description: 'Hook manager test.'
+package: custom
+core: 8.x
+
+dependencies: { }
